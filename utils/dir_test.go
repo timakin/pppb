@@ -16,8 +16,8 @@ type UtilsDirTestSuite struct {
 func (suite *UtilsDirTestSuite) SetupTest() {
 	path := filepath.Join(tmpPath...)
 	_, err := os.Stat(path)
-	if os.IsExist(err) {
-		if err := os.Remove(path); err != nil {
+	if !os.IsNotExist(err) {
+		if err := os.RemoveAll(path); err != nil {
 			fmt.Println(err)
 		}
 	}
@@ -25,7 +25,7 @@ func (suite *UtilsDirTestSuite) SetupTest() {
 
 func (suite *UtilsDirTestSuite) TeardownTest() {
 	dir := filepath.Join(tmpPath...)
-	if err := os.Remove(dir); err != nil {
+	if err := os.RemoveAll(dir); err != nil {
 		fmt.Println(err)
 	}
 }
@@ -33,7 +33,7 @@ func (suite *UtilsDirTestSuite) TestMkTmpdir() {
 	CreateTmpDir()
 	path := filepath.Join(tmpPath...)
 	_, err := os.Stat(path)
-	assert.True(suite.T(), os.IsExist(err))
+	assert.True(suite.T(), !os.IsNotExist(err))
 }
 
 func TestUtilsDirTestSuite(t *testing.T) {
